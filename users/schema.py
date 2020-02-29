@@ -1,11 +1,18 @@
 import graphene
-from graphene_django import DjangoObjectType
-from .models import User
+from .mutations import CreateAccountMutation, LoginMutation, ToggleFavsMutation, EditProfileMutation
+from .types import UserType
+from .queries import resolve_user, resolve_me
 
+class Query(object):
+    user = graphene.Field(UserType, id=graphene.Int(required=True), resolver=resolve_user)
 
-class UserType(DjangoObjectType):
+    me = graphene.Field(
+        UserType,resolver=resolve_me
+    )
 
-    rooms = graphene.List("rooms.schema.RoomType")
-
-    class Meta:
-        model = User
+class Mutation():
+    
+    create_account = CreateAccountMutation.Field()
+    login = LoginMutation.Field()
+    toggle_favs = ToggleFavsMutation.Field()
+    edit_profile = EditProfileMutation.Field()
